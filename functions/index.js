@@ -74,7 +74,7 @@ exports.createNewUser = functions.https.onRequest(async (req, res) => {
       // next();
     // });
 
-    res.status(200).json(newUser, snapshot);
+    res.status(200).json({ newUser, snapshot });
   });
   
 
