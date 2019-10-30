@@ -57,20 +57,24 @@ exports.makeUppercase = functions.database.ref('/messages/{pushId}/original')
 
 
 exports.createNewUser = functions.https.onRequest(async (req, res) => {
-    // Grab the text parameter.
+    // Grab the text parameter.,  
+    const { firstname, lastname, birthday, age, hobby } = req.query;
     const newUser = {
-        f: req.query.f,
-        l: req.query.l,
-        b: req.query.b,
-        a: req.query.a,
-        h: req.query.h,
+      firstname, lastname, birthday, age, hobby
     };
  
     // Push the new message into the Realtime Database using the Firebase Admin SDK.
     const snapshot = await admin.database().ref('/users').push({user: newUser});
     // Redirect with 303 SEE OTHER to the URL of the pushed object in the Firebase console.
     // res.redirect(303, snapshot.ref.toString());
-    res.status(200).json(newUser);
+    // app.use((req, res, next) => {
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
+      res.setHeader('Access-Control-Allow-Methods', 'GET');
+      // next();
+    // });
+
+    res.status(200).json(newUser, snapshot);
   });
   
 
@@ -83,7 +87,7 @@ exports.createNewUser = functions.https.onRequest(async (req, res) => {
 
 
   const uuidString = '1b671a64-40d5-491e-99b0-da01ff1f3341';
-  const userTag = user.f.concat('-', user.l);
+  const userTag = user.firstname.concat('-', user.lastname);
   const id = uuidv5(userTag, uuidString);
 
   user.userId = id;
